@@ -95,12 +95,16 @@ function calcularTotalSalarios() {
 }
 
 // Carregar itens no DOM
-function loadItens() {
+function loadItens(filtro = null) {
   itens = getItensBD();
   tbody.innerHTML = '';
+
   itens.forEach((item, index) => {
-    insertItem(item, index);
+    if (!filtro || (item.mesAno && item.mesAno === filtro)) {
+      insertItem(item, index);
+    }
   });
+
   calcularTotalSalarios();
 }
 
@@ -112,6 +116,25 @@ function getDataAtual() {
   let ano = hoje.getFullYear();
   return `${dia}/${mes}/${ano}`;
 }
+
+document.querySelectorAll('.meses button').forEach(button => {
+  button.addEventListener('click', () => {
+    const mesSelecionado = button.getAttribute('data-mes');
+    const anoAtual = new Date().getFullYear(); // Mantém sempre o ano atual
+    loadItens(`${mesSelecionado}/${anoAtual}`);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mesAtual = (new Date().getMonth() + 1).toString().padStart(2, '0'); // Obtém o mês atual (01 a 12)
+  const anoAtual = new Date().getFullYear(); // Obtém o ano atual
+
+  // Simula um clique no botão do mês atual
+  const botaoMesAtual = document.querySelector(`.meses button[data-mes="${mesAtual}"]`);
+  if (botaoMesAtual) {
+    botaoMesAtual.click(); 
+  }
+});
 
 
 // Salvar item
