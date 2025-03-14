@@ -1,0 +1,158 @@
+const modal = document.querySelector('.modal-container')
+const tbody = document.querySelector('tbody')
+const sNome = document.querySelector('#m-nome')
+const sFuncao = document.querySelector('#m-funcao')
+const sSalario = document.querySelector('#m-salario')
+const sDia = document.querySelector('#m-dia')
+const sDescription = document.querySelector('#m-description')
+const btnSalvar = document.querySelector('#btnSalvar')
+const sMesAno = document.querySelector('#m-mesAno'); // Campo oculto para mês e ano
+
+let itens = getItensBD();
+let id;
+
+function getMesAnoAtual() {
+  let hoje = new Date();
+  let ano = hoje.getFullYear();
+  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Garante dois dígitos no mês
+  return `${mes}/${ano}`;
+}
+
+// Retorna o dia atual no formato "02", "23", "31", "01"
+function getDiaAtual() {
+  let hoje = new Date().getDate();
+  return hoje.toString().padStart(2, '0'); // Garante dois dígitos
+}
+
+function openModal(edit = false, index = 0) {
+  modal.classList.add('active');
+
+  modal.onclick = e => {
+    if (e.target.classList.contains('modal-container')) {
+      modal.classList.remove('active');
+    }
+  };
+
+  if (edit) {
+    sMesAno.value = itens[index].mesAno || getMesAnoAtual(); // Se não houver, usa o mês e ano atuais
+    sDia.value = itens[index].dia || getDiaAtual(); // Se não houver valor, usa o dia atual
+    sDescription.value = itens[index].description || '';
+    sNome.value = itens[index].nome;
+    sFuncao.value = itens[index].funcao;
+    sSalario.value = itens[index].salario;
+    id = index;
+  } else {
+    sMesAno.value = getMesAnoAtual(); // Sempre salva o mês e ano ao criar um novo item
+    sDia.value = getDiaAtual(); // Sempre preenche com o dia atual ao adicionar novo item
+    sDescription.value = '';
+    sNome.value = '';
+    sFuncao.value = '';
+    sSalario.value = '';
+    id = undefined;
+  }
+}
+
+// Editar item
+function editItem(index) {
+  openModal(true, index);
+}
+
+// Excluir item
+function deleteItem(index) {
+  itens.splice(index, 1);
+  setItensBD();
+  loadItens();
+}
+
+// Inserir item na tabela
+function insertItem(item, index) {
+  let tr = document.createElement('tr');
+
+  tr.innerHTML = `
+    <td>
+    ${item.dia || ''}
+    ${item.mesAno || ''}
+    </td>
+    <td>${item.description || ''}</td>
+    <td>${item.nome}</td>
+    <td>${item.funcao}</td>
+    <td>${parseFloat(item.salario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+    <td class="acao">
+      <span class="btn-group">
+        <button onclick="editItem(${index})" title="Editar"><i class='bx bx-edit'></i></button>
+        <button onclick="deleteItem(${index})" title="Deletar"><i class='bx bx-trash'></i></button>
+      </span>
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+// Calcular total dos salários
+function calcularTotalSalarios() {
+  let total = itens.reduce((acc, item) => acc - (parseFloat(item.salario) || 0), 0);
+  total += 5000; // Soma 5000 ao saldo total
+  document.querySelector('#total-salario').textContent = `Saldo: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+}
+
+// Carregar itens no DOM
+function loadItens() {
+  itens = getItensBD();
+  tbody.innerHTML = '';
+  itens.forEach((item, index) => {
+    insertItem(item, index);
+  });
+  calcularTotalSalarios();
+}
+
+// Retorna a data atual no formato DD/MM/YYYY
+function getDataAtual() {
+  let hoje = new Date();
+  let dia = hoje.getDate().toString().padStart(2, '0');
+  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Mês começa em 0 (janeiro = 0)
+  let ano = hoje.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
+
+// Salvar item
+btnSalvar.onclick = e => {
+  if (sDia.value == '' || sDescription.value == '' || sNome.value == '' || sFuncao.value == '' || isNaN(parseFloat(sSalario.value))) {
+    alert('Preencha todos os campos corretamente!');
+    return;
+  }
+
+  e.preventDefault();
+
+  const novoItem = {
+    mesAno: sMesAno.value, // Salva o mês e ano no objeto
+    dia: sDia.value,
+    description: sDescription.value,
+    nome: sNome.value,
+    funcao: sFuncao.value,
+    salario: parseFloat(sSalario.value)
+  };
+
+  if (id !== undefined) {
+    itens[id] = novoItem;
+  } else {
+    itens.push(novoItem);
+  }
+
+  setItensBD();
+  modal.classList.remove('active');
+  loadItens();
+  id = undefined;
+};
+
+// Recuperar do localStorage
+function getItensBD() {
+  return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
+}
+
+// Salvar no localStorage
+function setItensBD() {
+  localStorage.setItem('dbfunc', JSON.stringify(itens));
+}
+
+// Inicializar a lista ao carregar a página
+loadItens();
