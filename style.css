@@ -257,7 +257,7 @@ td button i:first-child {
   display: flex;
   justify-content: center; /* Centraliza os botões */
   flex-wrap: wrap; /* Evita quebra desnecessária */
-  gap: 1.4px; /* Espaço de 1px entre os botões */
+  gap: 1.2px; /* Espaço de 1px entre os botões */
   padding-bottom: 10px;
 }
 
@@ -267,7 +267,7 @@ td button i:first-child {
   background-color: #f1f1f1;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .meses button:hover {
