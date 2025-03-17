@@ -13,6 +13,7 @@
 
     <div class="header">
       <span>Financeiro: </span>
+      <button id="btnVerSaldos">Anual SALDO</button>
       <span id="total-salario"></span>
       <button onclick="openModal()" id="new"> Incluir </i> </button>
     </div>
@@ -39,13 +40,28 @@
             <th>Descrição</th>
             <th>Parcela</th>
             <th>Valor</th>
-            <!-- <th class="acao">EDI</th> -->
-            <!-- <th class="acao">DEL</th> -->
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+
+      <div class="saldo-modal">
+        <div class="modal">
+          <h2>Saldo Anual: <span id="total-saldo-geral"></span></h2>
+          <table id="tabela-saldos">
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="lista-saldos"></tbody>
+          </table>
+          <button id="btnFecharSaldos">Fechar</button>
+        </div>
+      </div>
+
     <div class="modal-container">
       <div class="modal">
         <form>

@@ -80,7 +80,9 @@ function editItem(index) {
 function deleteItem(index) {
   itens.splice(index, 1);
   setItensBD();
-  loadItens();
+  // loadItens();
+  loadItens(sMesAnoSelecionado);
+  atualizarSaldoAnual();
 }
 
 // Inserir item na tabela
@@ -117,8 +119,7 @@ function calcularTotalSalarios(mesAnoFiltro = null) {
     .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
 
   const totalSalarioElement = document.querySelector('#total-salario');
-  totalSalarioElement.textContent = `Saldo: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-
+  totalSalarioElement.innerHTML = `Mensal:<br> ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
   totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
 }
 
@@ -178,6 +179,7 @@ document.querySelectorAll('.meses button').forEach(button => {
 document.addEventListener('DOMContentLoaded', () => {
   const mesAtual = (new Date().getMonth() + 1).toString().padStart(2, '0'); // Obtém o mês atual (01 a 12)
   const anoAtual = new Date().getFullYear(); // Obtém o ano atual
+  atualizarSaldoAnual(); // Atualiza o saldo anual assim que a página carrega
 
   // Simula um clique no botão do mês atual
   const botaoMesAtual = document.querySelector(`.meses button[data-mes="${mesAtual}"]`);
@@ -185,6 +187,25 @@ document.addEventListener('DOMContentLoaded', () => {
     botaoMesAtual.click();
   }
 });
+
+
+function atualizarSaldoAnual() {
+  let botaoSaldo = document.getElementById('btnVerSaldos');
+
+  if (!botaoSaldo) {
+    console.error("Erro: O botão 'btnVerSaldos' não foi encontrado!");
+    return; // Sai da função para evitar erro
+  }
+
+  let saldos = calcularSaldosMensais();
+  let totalSaldoGeral = Object.values(saldos).reduce((acc, saldo) => acc + saldo, 0);
+  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  botaoSaldo.textContent = `Anual ${saldoFormatado}`;
+
+  botaoSaldo.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
+}
+
 
 
 // Salvar item
@@ -219,6 +240,7 @@ btnSalvar.onclick = e => {
   modal.classList.remove('active');
   // loadItens();
   loadItens(sMesAnoSelecionado); // Agora ele mantém o mês selecionado
+  atualizarSaldoAnual();
   id = undefined;
 };
 
@@ -235,6 +257,80 @@ function getItensBD() {
 function setItensBD() {
   localStorage.setItem('dbfunc', JSON.stringify(itens));
 }
+
+document.getElementById('btnVerSaldos').addEventListener('click', () => {
+  mostrarSaldosMensais();
+});
+
+document.getElementById('btnFecharSaldos').addEventListener('click', () => {
+  document.querySelector('.saldo-modal').classList.remove('active');
+});
+
+function mostrarSaldosMensais() {
+  let saldos = calcularSaldosMensais();
+  let listaSaldos = document.getElementById('lista-saldos');
+  let totalSaldoGeral = 0;
+
+  listaSaldos.innerHTML = ''; // Limpa a lista antes de exibir os novos dados
+
+  let index = 1;
+  Object.keys(saldos).sort().forEach(mesAno => {
+    let saldo = saldos[mesAno];
+    totalSaldoGeral += saldo;
+    // <td>${index++}</td>
+
+    let sinal = saldo > 0 ? '+' : '';
+    let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
+
+    let tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${mesAno}</td>
+      <td style="color: ${cor}; font-weight: bold;">
+        ${sinal}${saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+      </td>
+    `;
+    listaSaldos.appendChild(tr);
+  });
+
+  // Formata o saldo total geral
+  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  // Atualiza o botão com o saldo anual
+  document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
+
+  document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  document.querySelector('.saldo-modal').classList.add('active');
+}
+
+
+function calcularSaldosMensais() {
+  let saldos = {};
+
+  // Lista fixa com todos os meses do ano
+  const meses = [
+    "01", "02", "03", "04", "05", "06",
+    "07", "08", "09", "10", "11", "12"
+  ];
+
+  const anoAtual = new Date().getFullYear();
+
+  // Preenche com saldo 0 para todos os meses
+  meses.forEach(mes => {
+    const mesAno = `${mes}/${anoAtual}`;
+    saldos[mesAno] = 0;
+  });
+
+  // Soma os valores existentes no banco de dados
+  itens.forEach(item => {
+    if (!saldos[item.mesAno]) {
+      saldos[item.mesAno] = 0;
+    }
+    saldos[item.mesAno] += parseFloat(item.salario) || 0;
+  });
+
+  return saldos;
+}
+
+
 
 // Inicializar a lista ao carregar a página
 loadItens();
