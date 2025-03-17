@@ -119,6 +119,12 @@ tbody tr td.acao {
 
 .negativo {
   color: red;
+  /* font-weight: bold; */
+}
+
+.meses button.ativo {
+  background-color: green;
+  color: white;
   font-weight: bold;
 }
 
@@ -225,12 +231,55 @@ tbody tr td.acao {
 
 .btn-group {
   display: flex;
-  /* gap: 01px; */
+  /* gap: 10px; */
+  /* margin-top: 10px; */
+}
+
+button.cancelar {
+  /* background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px; */
+  width: 100%;
+  margin: 10px auto;
+  outline: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  width: 100%;
+  border: none;
+  background-color: rgb(216, 17, 43);
+  color: white;
+}
+
+button.cancelar:hover {
+  background-color: darkred;
+}
+
+.btn-espaco {
+  padding: 0px 14px;
 }
 
 .btn-group button {
   padding: 2px 4px; /* Reduz o tamanho dos botões */
   font-size: 12px; /* Diminui o tamanho dos ícones */
+}
+
+.header-group {
+  display: flex;
+  align-items: center; /* Alinha verticalmente */
+  gap: 15px; /* Espaçamento entre os elementos */
+  justify-content: space-between; /* Distribui espaço */
+}
+
+.header-group h2 {
+  margin: 0; /* Remove margens padrão */
+}
+
+.input-group select {
+  padding: 5px;
+  font-size: 16px;
 }
 
 @keyframes modal {
@@ -262,7 +311,7 @@ td button i:first-child {
   display: flex;
   justify-content: center; /* Centraliza os botões */
   flex-wrap: wrap; /* Evita quebra desnecessária */
-  gap: 1.2px; /* Espaço de 1px entre os botões */
+  gap: 3px; /* Espaço de 1px entre os botões */
   padding-bottom: 10px;
 }
 
@@ -277,4 +326,10 @@ td button i:first-child {
 
 .meses button:hover {
   background-color: #ddd;
+}
+
+.meses button.active {
+  background-color: green;
+  color: white;
+  font-weight: bold;
 }

@@ -35,30 +35,30 @@
         <thead>
           <tr>
             <th>Dia</th>
-            <th>Desc.</th>
-            <th>Prod.</th>
-            <th>Parc.</th>
+            <th>Produto</th>
+            <th>Descrição</th>
+            <th>Parcela</th>
             <th>Valor</th>
             <!-- <th class="acao">EDI</th> -->
             <!-- <th class="acao">DEL</th> -->
           </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
     <div class="modal-container">
       <div class="modal">
         <form>
+          <!-- <h2>Nova Transação</h2> -->
 
-          <h2>Nova Transação</h2>
-          
-          <div class="input-group">
-            <label for="m-tipo">Tipo</label>
-            <select id="m-tipo" required>
-              <option value="credito">Crédito</option>
-              <option value="debito">Débito</option>
-            </select>
+          <div class="header-group">
+            <h2>Nova Transação</h2>
+            <div class="input-group">
+              <select id="m-tipo" required>
+                <option value="debito" selected>Débito</option>
+                <option value="credito">Crédito</option>
+              </select>
+            </div>
           </div>
 
           <input type="hidden" id="m-mesAno">
@@ -66,18 +66,19 @@
           <label for="m-dia">Dia</label>
           <input id="m-dia" type="text" required />
 
-          <!-- <label for="m-description">Descrição.</label> -->
           <input type="text" id="m-description" placeholder="Descrição" required />
 
-          <!-- <label for="m-nome">Produto</label> -->
           <input id="m-nome" type="text" placeholder="Produto" required />
 
-          <!-- <label for="m-funcao">Parcela</label> -->
           <input id="m-funcao" type="text" placeholder="Parcelas" required />
 
-          <!-- <label for="m-salario">Valor</label> -->
           <input id="m-salario" type="text" placeholder="Valor" required />
-          <button id="btnSalvar">Salvar</button>
+
+          <div class="btn-group">
+            <button id="btnSalvar">Salvar</button>
+            <div class="btn-espaco"> </div>
+            <button type="button" id="btnCancelar" class="cancelar">Cancelar</button>
+          </div>
 
         </form>
       </div>
