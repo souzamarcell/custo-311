@@ -7,6 +7,7 @@ const sDia = document.querySelector('#m-dia')
 const sDescription = document.querySelector('#m-description')
 const btnSalvar = document.querySelector('#btnSalvar')
 const sMesAno = document.querySelector('#m-mesAno'); // Campo oculto para mês e ano
+const sTipo = document.querySelector('#m-tipo'); // Captura o select de tipo
 
 let itens = getItensBD();
 let id;
@@ -67,16 +68,19 @@ function deleteItem(index) {
 // Inserir item na tabela
 function insertItem(item, index) {
   let tr = document.createElement('tr');
+  // ${item.mesAno || ''}
+  // <td>${item.tipo === 'credito' ? '💰 Crédito' : '💸 Débito'}</td>
 
   tr.innerHTML = `
     <td>
     ${item.dia || ''}
-    ${item.mesAno || ''}
     </td>
     <td>${item.description || ''}</td>
     <td>${item.nome}</td>
     <td>${item.funcao}</td>
-    <td>${parseFloat(item.salario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+    <td class="${item.tipo === 'debito' ? 'negativo' : ''}">
+      ${parseFloat(item.salario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+    </td>   
     <td class="acao">
       <span class="btn-group">
         <button onclick="editItem(${index})" title="Editar"><i class='bx bx-edit'></i></button>
@@ -89,9 +93,18 @@ function insertItem(item, index) {
 
 // Calcular total dos salários
 function calcularTotalSalarios() {
-  let total = itens.reduce((acc, item) => acc - (parseFloat(item.salario) || 0), 0);
-  total += 5000; // Soma 5000 ao saldo total
-  document.querySelector('#total-salario').textContent = `Saldo: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+  let total = itens.reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
+  total += 0; // Soma 5000 ao saldo total
+
+  const totalSalarioElement = document.querySelector('#total-salario');
+  totalSalarioElement.textContent = `Saldo: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+  // Se o saldo for negativo, muda a cor para vermelho
+  if (total < 0) {
+    totalSalarioElement.style.color = 'red';
+  } else {
+    totalSalarioElement.style.color = 'blue'; // Caso contrário, mantém a cor padrão
+  }
 }
 
 // Carregar itens no DOM
@@ -132,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Simula um clique no botão do mês atual
   const botaoMesAtual = document.querySelector(`.meses button[data-mes="${mesAtual}"]`);
   if (botaoMesAtual) {
-    botaoMesAtual.click(); 
+    botaoMesAtual.click();
   }
 });
 
@@ -146,13 +159,18 @@ btnSalvar.onclick = e => {
 
   e.preventDefault();
 
+  const valor = parseFloat(sSalario.value);
+  const tipo = document.querySelector('#m-tipo').value; // Obtém o tipo (crédito ou débito)
+
   const novoItem = {
     mesAno: sMesAno.value, // Salva o mês e ano no objeto
     dia: sDia.value,
     description: sDescription.value,
     nome: sNome.value,
     funcao: sFuncao.value,
-    salario: parseFloat(sSalario.value)
+    // salario: parseFloat(sSalario.value),
+    salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Garante que débito seja negativo e crédito positivo
+    tipo: sTipo.value // Adiciona o tipo (crédito ou débito)
   };
 
   if (id !== undefined) {
