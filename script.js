@@ -292,12 +292,22 @@ function mostrarSaldosMensais() {
     listaSaldos.appendChild(tr);
   });
 
+
+  let totalSaldoGeralElemento = document.getElementById('total-saldo-geral');
+  totalSaldoGeralElemento.textContent = totalSaldoGeral.toLocaleString(
+    'pt-BR', { style: 'currency', currency: 'BRL' }
+  );
+  // Define a cor do saldo
+  totalSaldoGeralElemento.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
+
   // Formata o saldo total geral
   let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   // Atualiza o botão com o saldo anual
   document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
 
-  document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString(
+    'pt-BR', { style: 'currency', currency: 'BRL' }
+  );
   document.querySelector('.saldo-modal').classList.add('active');
 }
 
