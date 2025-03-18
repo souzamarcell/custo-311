@@ -62,6 +62,18 @@
 
     </div>
 
+    <div id="confirmModal" class="modal-deletar">
+      <div class="modal-content">
+          <p>Tem certeza que deseja excluir este item?</p>
+          <div class="modal-buttons">
+              <button class="btn btn-danger" onclick="confirmDelete()">Excluir</button>
+              <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- <button onclick="deleteItem(0)">Excluir Item</button> -->
+
     <div class="saldo-modal">
       <div class="modal">
         <h2>Saldo Anual: <span id="total-saldo-geral"></span></h2>
@@ -98,12 +110,16 @@
           <label for="m-dia">Dia</label>
           <input id="m-dia" type="text" required />
 
+          <label for="m-nome">Descrição</label>
           <input type="text" id="m-description" placeholder="Descrição" required />
 
+          <label for="m-nome">Produto</label>
           <input id="m-nome" type="text" placeholder="Produto" required />
 
+          <label for="m-nome">Parcelas</label>
           <input id="m-funcao" type="text" placeholder="Parcelas" required />
 
+          <label for="m-nome">Valor</label>
           <input id="m-salario" type="text" placeholder="Valor" required />
 
           <div class="btn-group">
@@ -121,6 +137,7 @@
   </div>
 
   <script src="script.js"></script>
+  <!-- <script type="module" src="script.js"></script> -->
 
 </body>
 </html>
