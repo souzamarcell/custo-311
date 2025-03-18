@@ -20,10 +20,6 @@ document.querySelectorAll('.meses button').forEach(button => {
     const mesSelecionado = this.getAttribute('data-mes');
     const anoAtual = new Date().getFullYear();
     sMesAnoSelecionado = `${mesSelecionado}/${anoAtual}`;
-
-    // Remove a classe ativa de todos os botões e destaca o selecionado
-    // document.querySelectorAll('.meses button').forEach(btn => btn.classList.remove('active'));
-    // this.classList.add('active');
     loadItens(sMesAnoSelecionado); // Carrega apenas os itens do mês selecionado
   });
 });
@@ -88,10 +84,7 @@ function deleteItem(index) {
 // Inserir item na tabela
 function insertItem(item, index) {
   let tr = document.createElement('tr');
-  const sinal = item.tipo === 'credito' ? '+' : '';
-  // ${item.mesAno || ''}
-  // <td>${item.tipo === 'credito' ? '💰 Crédito' : '💸 Débito'}</td>
-
+  
   tr.innerHTML = `
     <td>
     ${item.dia || ''}
@@ -99,9 +92,11 @@ function insertItem(item, index) {
     <td>${item.nome}</td>
     <td>${item.description || ''}</td>
     <td>${item.funcao}</td>
-    <td class="${item.tipo === 'debito' ? 'negativo' : ''}">
-    ${sinal}${parseFloat(item.salario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-    </td>   
+
+    <td class="${item.tipo === 'debito' ? 'negativo' : ''}" style="color: ${parseFloat(item.salario) < 0 ? 'red' : 'blue'};">
+      ${parseFloat(item.salario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+    </td>  
+    
     <td class="acao">
       <span class="btn-group">
         <button onclick="editItem(${index})" title="Editar"><i class='bx bx-edit'></i></button>
@@ -119,7 +114,7 @@ function calcularTotalSalarios(mesAnoFiltro = null) {
     .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
 
   const totalSalarioElement = document.querySelector('#total-salario');
-  totalSalarioElement.innerHTML = `Mensal:<br> ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+  totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
 }
 
@@ -199,9 +194,10 @@ function atualizarSaldoAnual() {
 
   let saldos = calcularSaldosMensais();
   let totalSaldoGeral = Object.values(saldos).reduce((acc, saldo) => acc + saldo, 0);
-  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-  botaoSaldo.textContent = `Anual ${saldoFormatado}`;
+  // botaoSaldo.textContent = `Anual ${saldoFormatado}`;
+  botaoSaldo.innerHTML = `Anual<br> ${saldoFormatado}`;
 
   botaoSaldo.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
 }
@@ -279,14 +275,14 @@ function mostrarSaldosMensais() {
     totalSaldoGeral += saldo;
     // <td>${index++}</td>
 
-    let sinal = saldo > 0 ? '+' : '';
+    // let sinal = saldo > 0 ? '+' : '';
     let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
 
     let tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${mesAno}</td>
       <td style="color: ${cor}; font-weight: bold;">
-        ${sinal}${saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
       </td>
     `;
     listaSaldos.appendChild(tr);
@@ -295,18 +291,20 @@ function mostrarSaldosMensais() {
 
   let totalSaldoGeralElemento = document.getElementById('total-saldo-geral');
   totalSaldoGeralElemento.textContent = totalSaldoGeral.toLocaleString(
-    'pt-BR', { style: 'currency', currency: 'BRL' }
+    'pt-BR', { minimumFractionDigits: 2 }
   );
   // Define a cor do saldo
   totalSaldoGeralElemento.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
 
   // Formata o saldo total geral
-  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
   // Atualiza o botão com o saldo anual
-  document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
+  // document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
+  document.getElementById('btnVerSaldos').innerHTML = `Anual<br>${saldoFormatado}`;
 
   document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString(
-    'pt-BR', { style: 'currency', currency: 'BRL' }
+    'pt-BR', { minimumFractionDigits: 2 }
   );
   document.querySelector('.saldo-modal').classList.add('active');
 }

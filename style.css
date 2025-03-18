@@ -41,6 +41,14 @@ button {
   word-break: break-all;
 }
 
+#dolar {
+  color: blue;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  font-size: 30px;
+}
+
+
 #new {
   font-size: 16px;
   padding: 8px;
@@ -79,6 +87,11 @@ thead {
   background-color: whitesmoke;
 }
 
+.acoes-coluna {
+  width: 60px; 
+  text-align: center; /* Centraliza o texto */
+}
+
 tr {
   border-bottom: 1px solid rgb(238, 235, 235) !important;
 }
@@ -111,32 +124,52 @@ tbody tr td.acao {
   text-align: center;
 }
 
+
 #total-salario {
   font-weight: bold;
+  font-size: 14px; /* Aumentei um pouco o tamanho da fonte */
+  
+  border: 2px solid gray;
+  /* padding: 5px 10px;  */
+  border-radius: 7px;
+
+  width: 130px; /* Aumentei a largura */
+  height: 45px; /* Pequeno ajuste na altura */
+
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  /* font-weight: bold;
   font-size: 12px;
   
   border: 2px solid gray;
   padding: 2px 7px;
   border-radius: 7px;
 
-  width: 100px; /* Ajuste conforme necessário */
+  width: 100px;
   height: 40px; 
   display: inline-flex; 
   align-items: center; 
-  justify-content: center;
+  justify-content: center; */
 }
 
 #btnVerSaldos {
-  font-size: 13px;
+  font-weight: bold;
+  font-size: 14px; /* Aumentei um pouco o tamanho da fonte */
+  
+  border: 2px solid gray;
+  /* padding: 5px 10px;  */
+  border-radius: 7px;
 
-  width: 100px; /* Ajuste conforme necessário */
-  height: 40px; 
-  white-space: normal;
-  text-align: center;
-  padding: 5px;
-  line-height: 1.2;
+  width: 130px; /* Aumentei a largura */
+  height: 45px; /* Pequeno ajuste na altura */
+
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+
+  /* background-color: gray; */
 }
-
 
 
 #total-salario-mensal {
@@ -290,8 +323,8 @@ button.cancelar:hover {
 }
 
 .btn-group button {
-  padding: 2px 4px; /* Reduz o tamanho dos botões */
-  font-size: 12px; /* Diminui o tamanho dos ícones */
+  /* padding: 2px 4px;  */
+  font-size: 10px; /* Diminui o tamanho dos ícones */
 }
 
 .header-group {
