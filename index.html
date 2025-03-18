@@ -117,7 +117,9 @@
           <input id="m-nome" type="text" placeholder="Produto" required />
 
           <label for="m-nome">Parcelas</label>
-          <input id="m-funcao" type="text" placeholder="Parcelas" required />
+          <!-- <input id="m-funcao" type="text" placeholder="Parcelas" required /> -->
+          <input id="m-funcao" type="text" placeholder="Parcelas" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+
 
           <label for="m-nome">Valor</label>
           <input id="m-salario" type="text" placeholder="Valor" required />

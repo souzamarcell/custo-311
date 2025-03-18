@@ -11,6 +11,7 @@ const sTipo = document.querySelector('#m-tipo'); // Captura o select de tipo
 
 let itens = getItensBD();
 let id;
+let itemToDelete = null;
 
 // Atualizar o mês e ano ao clicar em um botão
 let sMesAnoSelecionado = '';
@@ -72,127 +73,119 @@ btnSalvar.onclick = e => {
 
   const valor = parseFloat(sSalario.value);
   const tipo = document.querySelector('#m-tipo').value; // Obtém o tipo (crédito ou débito)
+  const totalFuncoes = parseInt(sFuncao.value);
+  const dataAtual = new Date();
 
-  const novoItem = {
-    mesAno: sMesAnoSelecionado || getMesAnoAtual(), // Usa o mês selecionado ou o atual
-    dia: sDia.value,
-    description: sDescription.value,
-    nome: sNome.value,
-    funcao: sFuncao.value,
-    salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Garante que débito seja negativo e crédito positivo
-    tipo: sTipo.value // Adiciona o tipo (crédito ou débito)
-  };
+  for (let i = 1; i <= totalFuncoes; i++) {
+    let novaData = new Date(dataAtual);
+    novaData.setMonth(novaData.getMonth() + (i - 1));
 
-  if (id !== undefined) {
-    itens[id] = novoItem;
-  } else {
-    itens.push(novoItem);
-  }
+    const novoItem = {
+      mesAno: `${String(novaData.getMonth() + 1).padStart(2, '0')}/${novaData.getFullYear()}`, // Formato MM/YYYY
+
+      dia: sDia.value,
+      description: `${sDescription.value}`, // Adiciona a numeração da função
+      nome: sNome.value,
+      funcao: `${i}x${totalFuncoes}`,
+      salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Garante que débito seja negativo e crédito positivo
+      tipo: sTipo.value
+    };
+
+    if (id !== undefined && i === 1) {
+      itens[id] = novoItem;
+    } else {
+      itens.push(novoItem);
+    }
+  } // <- Fechamento correto do laço for
 
   setItensBD();
   modal.classList.remove('active');
-  // loadItens();
   loadItens(sMesAnoSelecionado); // Agora ele mantém o mês selecionado
   atualizarSaldoAnual();
   id = undefined;
-};
-
-// Recuperar do localStorage
-function getItensBD() {
-  return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
 }
 
-// Salvar no localStorage
-function setItensBD() {
-  localStorage.setItem('dbfunc', JSON.stringify(itens));
-}
-function getMesAnoAtual() {
-  let hoje = new Date();
-  let ano = hoje.getFullYear();
-  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Garante dois dígitos no mês
-  return `${mes}/${ano}`;
-}
 
-// Retorna o dia atual no formato "02", "23", "31", "01"
-function getDiaAtual() {
-  let hoje = new Date().getDate();
-  return hoje.toString().padStart(2, '0'); // Garante dois dígitos
-}
+  // Recuperar do localStorage
+  function getItensBD() {
+    return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
+  }
 
-function openModal(edit = false, index = 0) {
-  modal.classList.add('active');
+  // Salvar no localStorage
+  function setItensBD() {
+    localStorage.setItem('dbfunc', JSON.stringify(itens));
+  }
 
-  modal.onclick = e => {
-    if (e.target.classList.contains('modal-container')) {
-      modal.classList.remove('active');
+  function getMesAnoAtual() {
+    let hoje = new Date();
+    let ano = hoje.getFullYear();
+    let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Garante dois dígitos no mês
+    return `${mes}/${ano}`;
+  }
+
+  // Retorna o dia atual no formato "02", "23", "31", "01"
+  function getDiaAtual() {
+    let hoje = new Date().getDate();
+    return hoje.toString().padStart(2, '0'); // Garante dois dígitos
+  }
+
+  function openModal(edit = false, index = 0) {
+    modal.classList.add('active');
+
+    modal.onclick = e => {
+      if (e.target.classList.contains('modal-container')) {
+        modal.classList.remove('active');
+      }
+    };
+
+    if (edit) {
+      sMesAno.value = itens[index].mesAno || getMesAnoAtual(); // Se não houver, usa o mês e ano atuais
+      sDia.value = itens[index].dia || getDiaAtual(); // Se não houver valor, usa o dia atual
+      sDescription.value = itens[index].description || '';
+      sNome.value = itens[index].nome;
+      sFuncao.value = itens[index].funcao;
+      sSalario.value = itens[index].salario;
+      sTipo.value = itens[index].tipo || 'debito'; // Garante que o tipo seja carregado corretamente
+      id = index;
+    } else {
+      sMesAno.value = getMesAnoAtual(); // Sempre salva o mês e ano ao criar um novo item
+      sDia.value = getDiaAtual(); // Sempre preenche com o dia atual ao adicionar novo item
+      sDescription.value = '';
+      sNome.value = '';
+      sFuncao.value = '';
+      sSalario.value = '';
+      sTipo.value = 'debito'; // Agora o modal sempre abre com Débito como padrão
+      id = undefined;
     }
-  };
-
-  if (edit) {
-    sMesAno.value = itens[index].mesAno || getMesAnoAtual(); // Se não houver, usa o mês e ano atuais
-    sDia.value = itens[index].dia || getDiaAtual(); // Se não houver valor, usa o dia atual
-    sDescription.value = itens[index].description || '';
-    sNome.value = itens[index].nome;
-    sFuncao.value = itens[index].funcao;
-    sSalario.value = itens[index].salario;
-    sTipo.value = itens[index].tipo || 'debito'; // Garante que o tipo seja carregado corretamente
-    id = index;
-  } else {
-    sMesAno.value = getMesAnoAtual(); // Sempre salva o mês e ano ao criar um novo item
-    sDia.value = getDiaAtual(); // Sempre preenche com o dia atual ao adicionar novo item
-    sDescription.value = '';
-    sNome.value = '';
-    sFuncao.value = '';
-    sSalario.value = '';
-    sTipo.value = 'debito'; // Agora o modal sempre abre com Débito como padrão
-    id = undefined;
   }
-}
 
-// Editar item
-function editItem(index) {
-  openModal(true, index);
-}
-
-// Excluir item
-// function deleteItem(index) {
-//   const confirmacao = window.confirm("Tem certeza que deseja excluir este item?");
-
-//   if (confirmacao) {
-//     itens.splice(index, 1);
-//     setItensBD();
-//     loadItens(sMesAnoSelecionado);
-//     atualizarSaldoAnual();
-//     alert("Item excluído com sucesso!");
-//   }
-// }
-let itemToDelete = null;
-function deleteItem(index) {
-  itemToDelete = index;
-  document.getElementById("confirmModal").style.display = "flex";
-}
-function confirmDelete() {
-  if (itemToDelete !== null) {
-    itens.splice(itemToDelete, 1);
-    setItensBD();
-    loadItens(sMesAnoSelecionado);
-    atualizarSaldoAnual();
+  // Editar item
+  function editItem(index) {
+    openModal(true, index);
   }
-  closeModal();
-}
-function closeModal() {
-  document.getElementById("confirmModal").style.display = "none";
-}
 
+  function deleteItem(index) {
+    itemToDelete = index;
+    document.getElementById("confirmModal").style.display = "flex";
+  }
+  function confirmDelete() {
+    if (itemToDelete !== null) {
+      itens.splice(itemToDelete, 1);
+      setItensBD();
+      loadItens(sMesAnoSelecionado);
+      atualizarSaldoAnual();
+    }
+    closeModal();
+  }
+  function closeModal() {
+    document.getElementById("confirmModal").style.display = "none";
+  }
 
+  // Inserir item na tabela
+  function insertItem(item, index) {
+    let tr = document.createElement('tr');
 
-
-
-// Inserir item na tabela
-function insertItem(item, index) {
-  let tr = document.createElement('tr');
-
-  tr.innerHTML = `
+    tr.innerHTML = `
     <td>
     ${item.dia || ''}
     </td>
@@ -211,143 +204,128 @@ function insertItem(item, index) {
       </span>
     </td>
   `;
-  tbody.appendChild(tr);
-}
-
-// Calcular total dos salários
-function calcularTotalSalarios(mesAnoFiltro = null) {
-  let total = itens
-    .filter(item => item.mesAno === mesAnoFiltro) // Filtra apenas os itens do mês selecionado
-    .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
-
-  const totalSalarioElement = document.querySelector('#total-salario');
-  totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-  totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
-}
-
-// Modificar `loadItens()` para chamar `calcularTotalSalarios()` corretamente
-// function loadItens(filtro = null) {
-//   itens = getItensBD();
-//   tbody.innerHTML = '';
-
-//   itens.forEach((item, index) => {
-//     if (!filtro || (item.mesAno && item.mesAno === filtro)) {
-//       insertItem(item, index);
-//     }
-//   });
-//   calcularTotalSalarios(filtro); 
-// }
-
-// Carregar itens no DOM
-function loadItens(filtro = null) {
-  itens = getItensBD();
-  tbody.innerHTML = '';
-
-  itens.forEach((item, index) => {
-    if (!filtro || item.mesAno === filtro) {
-      insertItem(item, index);
-    }
-  });
-  calcularTotalSalarios(filtro); // Agora calcula o saldo APENAS do mês selecionado
-}
-
-// Retorna a data atual no formato DD/MM/YYYY
-function getDataAtual() {
-  let hoje = new Date();
-  let dia = hoje.getDate().toString().padStart(2, '0');
-  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Mês começa em 0 (janeiro = 0)
-  let ano = hoje.getFullYear();
-  return `${dia}/${mes}/${ano}`;
-}
-
-function atualizarSaldoAnual() {
-  let botaoSaldo = document.getElementById('btnVerSaldos');
-
-  if (!botaoSaldo) {
-    console.error("Erro: O botão 'btnVerSaldos' não foi encontrado!");
-    return; // Sai da função para evitar erro
+    tbody.appendChild(tr);
   }
 
-  let saldos = calcularSaldosMensais();
-  let totalSaldoGeral = Object.values(saldos).reduce((acc, saldo) => acc + saldo, 0);
-  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  // Calcular total dos salários
+  function calcularTotalSalarios(mesAnoFiltro = null) {
+    let total = itens
+      .filter(item => item.mesAno === mesAnoFiltro) // Filtra apenas os itens do mês selecionado
+      .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
 
-  // botaoSaldo.textContent = `Anual ${saldoFormatado}`;
-  botaoSaldo.innerHTML = `Anual<br> ${saldoFormatado}`;
+    const totalSalarioElement = document.querySelector('#total-salario');
+    totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
+  }
 
-  botaoSaldo.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
-}
+  // Carregar itens no DOM
+  function loadItens(filtro = null) {
+    itens = getItensBD();
+    tbody.innerHTML = '';
 
+    itens.forEach((item, index) => {
+      if (!filtro || item.mesAno === filtro) {
+        insertItem(item, index);
+      }
+    });
+    calcularTotalSalarios(filtro); // Agora calcula o saldo APENAS do mês selecionado
+  }
 
+  // Retorna a data atual no formato DD/MM/YYYY
+  function getDataAtual() {
+    let hoje = new Date();
+    let dia = hoje.getDate().toString().padStart(2, '0');
+    let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Mês começa em 0 (janeiro = 0)
+    let ano = hoje.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  }
 
-function mostrarSaldosMensais() {
-  let saldos = calcularSaldosMensais();
-  let listaSaldos = document.getElementById('lista-saldos');
-  let totalSaldoGeral = 0;
+  function atualizarSaldoAnual() {
+    let botaoSaldo = document.getElementById('btnVerSaldos');
 
-  listaSaldos.innerHTML = ''; // Limpa a lista antes de exibir os novos dados
+    if (!botaoSaldo) {
+      console.error("Erro: O botão 'btnVerSaldos' não foi encontrado!");
+      return; // Sai da função para evitar erro
+    }
 
-  let index = 1;
-  Object.keys(saldos).sort().forEach(mesAno => {
-    let saldo = saldos[mesAno];
-    totalSaldoGeral += saldo;
-    // <td>${index++}</td>
+    let saldos = calcularSaldosMensais();
+    let totalSaldoGeral = Object.values(saldos).reduce((acc, saldo) => acc + saldo, 0);
+    let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-    // let sinal = saldo > 0 ? '+' : '';
-    let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
+    // botaoSaldo.textContent = `Anual ${saldoFormatado}`;
+    botaoSaldo.innerHTML = `Anual<br> ${saldoFormatado}`;
 
-    let tr = document.createElement('tr');
-    tr.innerHTML = `
+    botaoSaldo.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
+  }
+
+  function mostrarSaldosMensais() {
+    let saldos = calcularSaldosMensais();
+    let listaSaldos = document.getElementById('lista-saldos');
+    let totalSaldoGeral = 0;
+
+    listaSaldos.innerHTML = ''; // Limpa a lista antes de exibir os novos dados
+
+    let index = 1;
+    Object.keys(saldos).sort().forEach(mesAno => {
+      let saldo = saldos[mesAno];
+      totalSaldoGeral += saldo;
+      // <td>${index++}</td>
+
+      // let sinal = saldo > 0 ? '+' : '';
+      let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
+
+      let tr = document.createElement('tr');
+      tr.innerHTML = `
       <td>${mesAno}</td>
       <td style="color: ${cor}; font-weight: bold;">
         ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
       </td>
     `;
-    listaSaldos.appendChild(tr);
-  });
+      listaSaldos.appendChild(tr);
+    });
 
-  let totalSaldoGeralElemento = document.getElementById('total-saldo-geral');
-  totalSaldoGeralElemento.textContent = totalSaldoGeral.toLocaleString(
-    'pt-BR', { minimumFractionDigits: 2 }
-  );
-  // Define a cor do saldo
-  totalSaldoGeralElemento.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
+    let totalSaldoGeralElemento = document.getElementById('total-saldo-geral');
+    totalSaldoGeralElemento.textContent = totalSaldoGeral.toLocaleString(
+      'pt-BR', { minimumFractionDigits: 2 }
+    );
+    // Define a cor do saldo
+    totalSaldoGeralElemento.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
 
-  // Formata o saldo total geral
-  let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    // Formata o saldo total geral
+    let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-  // Atualiza o botão com o saldo anual
-  // document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
-  document.getElementById('btnVerSaldos').innerHTML = `Anual<br>${saldoFormatado}`;
+    // Atualiza o botão com o saldo anual
+    // document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
+    document.getElementById('btnVerSaldos').innerHTML = `Anual<br>${saldoFormatado}`;
 
-  document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString(
-    'pt-BR', { minimumFractionDigits: 2 }
-  );
-  document.querySelector('.saldo-modal').classList.add('active');
-}
+    document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString(
+      'pt-BR', { minimumFractionDigits: 2 }
+    );
+    document.querySelector('.saldo-modal').classList.add('active');
+  }
 
-function calcularSaldosMensais() {
-  let saldos = {};
-  // Lista fixa com todos os meses do ano
-  const meses = [
-    "01", "02", "03", "04", "05", "06",
-    "07", "08", "09", "10", "11", "12"
-  ];
-  // Preenche com saldo 0 para todos os meses
-  const anoAtual = new Date().getFullYear();
-  meses.forEach(mes => {
-    const mesAno = `${mes}/${anoAtual}`;
-    saldos[mesAno] = 0;
-  });
-  // Soma os valores existentes no banco de dados
-  itens.forEach(item => {
-    if (!saldos[item.mesAno]) {
-      saldos[item.mesAno] = 0;
-    }
-    saldos[item.mesAno] += parseFloat(item.salario) || 0;
-  });
-  return saldos;
-}
+  function calcularSaldosMensais() {
+    let saldos = {};
+    // Lista fixa com todos os meses do ano
+    const meses = [
+      "01", "02", "03", "04", "05", "06",
+      "07", "08", "09", "10", "11", "12"
+    ];
+    // Preenche com saldo 0 para todos os meses
+    const anoAtual = new Date().getFullYear();
+    meses.forEach(mes => {
+      const mesAno = `${mes}/${anoAtual}`;
+      saldos[mesAno] = 0;
+    });
+    // Soma os valores existentes no banco de dados
+    itens.forEach(item => {
+      if (!saldos[item.mesAno]) {
+        saldos[item.mesAno] = 0;
+      }
+      saldos[item.mesAno] += parseFloat(item.salario) || 0;
+    });
+    return saldos;
+  }
 
-// Inicializar a lista ao carregar a página
-loadItens();
+  // Inicializar a lista ao carregar a página
+  loadItens();
