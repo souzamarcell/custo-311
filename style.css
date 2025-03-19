@@ -143,12 +143,12 @@ button {
   padding-bottom: 10px;
 }
 .meses button {
-  padding: 2px 5px;
-  border: 0.5px solid #ccc;
+  padding: 3px 3px;
+  border: 0.7px solid #ccc;
   background-color: #f1f1f1;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 10.5px;
 }
 .meses button:hover {
   background-color: #ddd;
