@@ -113,21 +113,82 @@ button {
 }
 
 .divTable {
-  /* padding: 10px  */
   width: auto;
   height: inherit;
   overflow: auto;
 }
-
 .divTable::-webkit-scrollbar {
   width: 12px;
   background-color: whitesmoke;
 }
-
 .divTable::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: darkgray;
 }
+
+.divTableAno::-webkit-scrollbar {
+  width: 12px;
+  background-color: whitesmoke;
+}
+.divTableAno::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: darkgray;
+}
+
+.meses {
+  display: flex;
+  justify-content: center; /* Centraliza os botões */
+  flex-wrap: wrap; /* Evita quebra desnecessária */
+  gap: 3px; /* Espaço de 1px entre os botões */
+  padding-bottom: 10px;
+}
+.meses button {
+  padding: 2px 5px;
+  border: 0.5px solid #ccc;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 9px;
+}
+.meses button:hover {
+  background-color: #ddd;
+}
+.meses button.active {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+}
+/* .meses button.ativo {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+} */
+
+.anos {
+  display: flex;
+  justify-content: center; /* Centraliza os botões */
+  flex-wrap: wrap; /* Evita quebra desnecessária */
+  gap: 4px; /* Espaço de 1px entre os botões */
+  padding-bottom: 10px;
+}
+.anos button {
+  padding: 2px 5px;
+  border: 0.5px solid #ccc;
+  background-color: rgb(218, 165, 32);
+
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 9px;
+}
+.anos button:hover {
+  background-color: #ddd;
+}
+.anos button.active {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+}
+
 
 table {
   margin: 0 auto; /* Centraliza a tabela */
@@ -416,39 +477,6 @@ td button i {
 
 td button i:first-child {
   margin-right: 10px;
-}
-
-.meses {
-  display: flex;
-  justify-content: center; /* Centraliza os botões */
-  flex-wrap: wrap; /* Evita quebra desnecessária */
-  gap: 3px; /* Espaço de 1px entre os botões */
-  padding-bottom: 10px;
-}
-
-.meses button {
-  padding: 2px 5px;
-  border: 0.5px solid #ccc;
-  background-color: #f1f1f1;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 9px;
-}
-
-.meses button:hover {
-  background-color: #ddd;
-}
-
-.meses button.active {
-  background-color: green;
-  color: white;
-  font-weight: bold;
-}
-
-.meses button.ativo {
-  background-color: green;
-  color: white;
-  font-weight: bold;
 }
 
 .saldo-modal {
