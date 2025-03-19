@@ -39,8 +39,8 @@ document.getElementById('btnFecharSaldos').addEventListener('click', () => {
 
 document.querySelectorAll('.meses button').forEach(button => {
   button.addEventListener('click', () => {
-    document.querySelectorAll('.meses button').forEach(btn => btn.classList.remove('ativo'));
-    button.classList.add('ativo');
+    document.querySelectorAll('.meses button').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
 
     const mesSelecionado = button.getAttribute('data-mes');
     const anoAtual = new Date().getFullYear();
@@ -173,7 +173,7 @@ function loadItens(filtro = null) {
   itens = getItensBD();
 
   itens.sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
-  
+
   tbody.innerHTML = '';
 
   itens.forEach((item, index) => {

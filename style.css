@@ -237,12 +237,6 @@ tbody tr td.acao {
   /* font-weight: bold; */
 }
 
-.meses button.ativo {
-  background-color: green;
-  color: white;
-  font-weight: bold;
-}
-
 @media (max-width: 700px) {
   body {
     font-size: 10px;
@@ -446,6 +440,12 @@ td button i:first-child {
 }
 
 .meses button.active {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+}
+
+.meses button.ativo {
   background-color: green;
   color: white;
   font-weight: bold;
