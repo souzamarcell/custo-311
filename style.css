@@ -538,3 +538,21 @@ td button i:first-child {
   background: #ccc;
   color: black;
 }
+
+#btnLimpar {
+  background-color: #ff4d4d; /* Vermelho vibrante */
+  color: white; /* Texto branco para contraste */
+  border: none;
+  border-radius: 50%; /* Botão arredondado */
+  width: 14px;
+  height: 14px;
+  font-size: 7x;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+#btnLimpar:hover {
+  background-color: #cc0000; /* Vermelho mais escuro ao passar o mouse */
+}
