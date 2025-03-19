@@ -71,6 +71,11 @@ document.getElementById("btnLimpar").onclick = function () {
   }
 };
 
+// Recuperar do localStorage
+function getItensBD() {
+  return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
+}
+
 // Salvar item
 btnSalvar.onclick = e => {
   if (sDia.value == '' || sDescription.value == '' || sNome.value == '' || sFuncao.value == '' || isNaN(parseFloat(sSalario.value))) {
@@ -86,21 +91,30 @@ btnSalvar.onclick = e => {
   const [mes, ano] = sMesAnoSelecionado.split('/').map(Number);
   let dataBase = new Date(ano, mes - 1, 1); // Define o primeiro dia do mês selecionado
 
-  for (let i = 1; i <= totalFuncoes; i++) {
-    let novaData = new Date(dataBase);
-    novaData.setMonth(novaData.getMonth() + (i - 1)); // Avança os meses a partir do selecionado
-    const novoItem = {
-      mesAno: `${String(novaData.getMonth() + 1).padStart(2, '0')}/${novaData.getFullYear()}`, // Formato MM/YYYY
+  if (id !== undefined) {
+    // Edição: mantém a função original
+    itens[id] = {
+      ...itens[id],
       dia: sDia.value,
-      description: `${sDescription.value}`, // Mantém a descrição
+      description: sDescription.value,
       nome: sNome.value,
-      funcao: `${i}x${totalFuncoes}`, // Formato correto das funções
-      salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Débito negativo, crédito positivo
+      salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor),
       tipo: sTipo.value
     };
-    if (id !== undefined && i === 1) {
-      itens[id] = novoItem;
-    } else {
+  } else {
+    // Criação de novos itens
+    for (let i = 1; i <= totalFuncoes; i++) {
+      let novaData = new Date(dataBase);
+      novaData.setMonth(novaData.getMonth() + (i - 1)); // Avança os meses a partir do selecionado
+      const novoItem = {
+        mesAno: `${String(novaData.getMonth() + 1).padStart(2, '0')}/${novaData.getFullYear()}`, // Formato MM/YYYY
+        dia: sDia.value,
+        description: `${sDescription.value}`, // Mantém a descrição
+        nome: sNome.value,
+        funcao: `${i}x${totalFuncoes}`, // Formato correto das funções
+        salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Débito negativo, crédito positivo
+        tipo: sTipo.value
+      };
       itens.push(novoItem);
     }
   }
@@ -113,29 +127,18 @@ btnSalvar.onclick = e => {
 };
 
 
-// Recuperar do localStorage
-function getItensBD() {
-  return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
-}
 
 // Salvar no localStorage
 function setItensBD() {
   localStorage.setItem('dbfunc', JSON.stringify(itens));
 }
 
-function getMesAnoAtual() {
-  let hoje = new Date();
-  let ano = hoje.getFullYear();
-  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Garante dois dígitos no mês
-  return `${mes}/${ano}`;
+// Editar item
+function editItem(index) {
+  openModal(true, index);
 }
 
-// Retorna o dia atual no formato "02", "23", "31", "01"
-function getDiaAtual() {
-  let hoje = new Date().getDate();
-  return hoje.toString().padStart(2, '0'); // Garante dois dígitos
-}
-
+// Editar Modal
 function openModal(edit = false, index = 0) {
   modal.classList.add('active');
 
@@ -166,9 +169,30 @@ function openModal(edit = false, index = 0) {
   }
 }
 
-// Editar item
-function editItem(index) {
-  openModal(true, index);
+// Carregar itens no DOM
+function loadItens(filtro = null) {
+  itens = getItensBD();
+  tbody.innerHTML = '';
+
+  itens.forEach((item, index) => {
+    if (!filtro || item.mesAno === filtro) {
+      insertItem(item, index);
+    }
+  });
+  calcularTotalSalarios(filtro); // Agora calcula o saldo APENAS do mês selecionado
+}
+
+function getMesAnoAtual() {
+  let hoje = new Date();
+  let ano = hoje.getFullYear();
+  let mes = (hoje.getMonth() + 1).toString().padStart(2, '0'); // Garante dois dígitos no mês
+  return `${mes}/${ano}`;
+}
+
+// Retorna o dia atual no formato "02", "23", "31", "01"
+function getDiaAtual() {
+  let hoje = new Date().getDate();
+  return hoje.toString().padStart(2, '0'); // Garante dois dígitos
 }
 
 function deleteItem(index) {
@@ -188,7 +212,7 @@ function closeModal() {
   document.getElementById("confirmModal").style.display = "none";
 }
 
-// Inserir item na tabela
+// <td> Inserir item na tabela
 function insertItem(item, index) {
   let tr = document.createElement('tr');
 
@@ -223,19 +247,6 @@ function calcularTotalSalarios(mesAnoFiltro = null) {
   const totalSalarioElement = document.querySelector('#total-salario');
   totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
-}
-
-// Carregar itens no DOM
-function loadItens(filtro = null) {
-  itens = getItensBD();
-  tbody.innerHTML = '';
-
-  itens.forEach((item, index) => {
-    if (!filtro || item.mesAno === filtro) {
-      insertItem(item, index);
-    }
-  });
-  calcularTotalSalarios(filtro); // Agora calcula o saldo APENAS do mês selecionado
 }
 
 // Retorna a data atual no formato DD/MM/YYYY

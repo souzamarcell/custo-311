@@ -67,15 +67,13 @@
 
     <div id="confirmModal" class="modal-deletar">
       <div class="modal-content">
-          <p>Tem certeza que deseja excluir este item?</p>
-          <div class="modal-buttons">
-              <button class="btn btn-danger" onclick="confirmDelete()">Excluir</button>
-              <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-          </div>
+        <p>Tem certeza que deseja excluir este item?</p>
+        <div class="modal-buttons">
+          <button class="btn btn-danger" onclick="confirmDelete()">Excluir</button>
+          <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        </div>
       </div>
-  </div>
-
-  <!-- <button onclick="deleteItem(0)">Excluir Item</button> -->
+    </div>
 
     <div class="saldo-modal">
       <div class="modal">
@@ -119,15 +117,16 @@
           <input id="m-nome" type="text" placeholder="" required />
 
           <label for="m-nome">Parcelas</label>
-          <input id="m-funcao" type="text" placeholder="" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+          <input id="m-funcao" type="text" placeholder="" required
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
 
           <label for="m-nome">Valor</label>
           <input id="m-salario" type="text" placeholder="" required />
 
           <div class="btn-group">
-            <button id="btnSalvar">Salvar</button>
-            <div class="btn-espaco"> </div>
             <button type="button" id="btnCancelar" class="cancelar">Cancelar</button>
+            <div class="btn-espaco"> </div>
+            <button id="btnSalvar">Salvar</button>
           </div>
 
         </form>
