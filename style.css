@@ -304,6 +304,7 @@ tbody tr td.acao {
 .modal label {
   font-size: 14px;
   width: 100%;
+  /* background-color: rgb(57, 57, 226); */
 }
 
 .modal input {
@@ -389,6 +390,8 @@ button.cancelar:hover {
 
 .header-group h2 {
   margin: 0; /* Remove margens padrão */
+  margin: 0 0 20px 0; /* Adiciona margem apenas na parte inferior */
+  font-size: 18px;
 }
 
 .input-group select {
@@ -491,9 +494,15 @@ td button i:first-child {
 }  
 
 .modal {  
-  text-align: center; /* Centraliza o conteúdo dentro da modal */
+  /* Centraliza o conteúdo dentro da modal */
+  /* text-align: center;  */
+  font-weight: bold;
 }  
 
+.modal label {  
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Adiciona sombra no texto */
+} 
 
 /* Estilização do modal */
 .modal-deletar {
@@ -555,4 +564,12 @@ td button i:first-child {
 }
 #btnLimpar:hover {
   background-color: #cc0000; /* Vermelho mais escuro ao passar o mouse */
+}
+
+
+/* Efeito ao focar */
+.modal select#m-tipo:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-radius: 7px;
 }

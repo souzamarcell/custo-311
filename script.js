@@ -127,7 +127,6 @@ btnSalvar.onclick = e => {
 };
 
 
-
 // Salvar no localStorage
 function setItensBD() {
   localStorage.setItem('dbfunc', JSON.stringify(itens));
