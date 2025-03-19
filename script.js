@@ -171,6 +171,9 @@ function openModal(edit = false, index = 0) {
 // Carregar itens no DOM
 function loadItens(filtro = null) {
   itens = getItensBD();
+
+  itens.sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
+  
   tbody.innerHTML = '';
 
   itens.forEach((item, index) => {
