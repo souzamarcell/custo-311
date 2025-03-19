@@ -19,6 +19,9 @@
         <img src="marcell-whatsApp.jpg" alt="whatsApp Marcell Ramos de Souza">
       </div>
     </a>
+    &nbsp&nbsp
+    <button id="btnLimpar">X</button>
+    &nbsp
   </span>
 
   <div class="container">
@@ -93,7 +96,6 @@
     <div class="modal-container">
       <div class="modal">
         <form>
-          <!-- <h2>Nova Transação</h2> -->
 
           <div class="header-group">
             <h2>Nova Transação</h2>
@@ -111,18 +113,16 @@
           <input id="m-dia" type="text" required />
 
           <label for="m-nome">Descrição</label>
-          <input type="text" id="m-description" placeholder="Descrição" required />
+          <input type="text" id="m-description" placeholder="" required />
 
           <label for="m-nome">Produto</label>
-          <input id="m-nome" type="text" placeholder="Produto" required />
+          <input id="m-nome" type="text" placeholder="" required />
 
           <label for="m-nome">Parcelas</label>
-          <!-- <input id="m-funcao" type="text" placeholder="Parcelas" required /> -->
-          <input id="m-funcao" type="text" placeholder="Parcelas" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
-
+          <input id="m-funcao" type="text" placeholder="" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
 
           <label for="m-nome">Valor</label>
-          <input id="m-salario" type="text" placeholder="Valor" required />
+          <input id="m-salario" type="text" placeholder="" required />
 
           <div class="btn-group">
             <button id="btnSalvar">Salvar</button>
