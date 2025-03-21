@@ -13,6 +13,14 @@ let itens = getItensBD();
 let id;
 let itemToDelete = null;
 
+// contador de visitante
+// let visitas = localStorage.getItem("contador") || 0;
+// visitas++;
+// localStorage.setItem("contador", visitas); // Atualiza o contador no localStorage
+// document.getElementById("contador").textContent = visitas; // Exibe o contador na página
+
+
+
 // Atualizar o mês e ano ao clicar em um botão
 let sMesAnoSelecionado = '';
 // let sMesAnoSelecionado = getMesAnoAtual(); // Define o mês atual ao iniciar

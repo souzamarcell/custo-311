@@ -29,7 +29,7 @@ button {
 
 .texto-acima {
   position: absolute;
-  top: 10px; 
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
 
@@ -37,15 +37,15 @@ button {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
   font-size: 25px;
-  
+
   border: 2px solid gray;
   border-radius: 7px;
 
   width: 370px; /* Aumentei a largura */
   height: 45px; /* Pequeno ajuste na altura */
 
-  display: inline-flex; 
-  align-items: center; 
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
 
   background-color: black;
@@ -64,7 +64,7 @@ button {
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  border: 2px solid #25D366;
+  border: 2px solid #25d366;
 }
 .whatsApp-icon img {
   width: 100%;
@@ -99,7 +99,6 @@ button {
   font-weight: bold;
   font-size: 30px;
 }
-
 
 #new {
   font-size: 16px;
@@ -187,7 +186,6 @@ button {
   font-weight: bold;
 }
 
-
 table {
   margin: 0 auto; /* Centraliza a tabela */
   width: 100%;
@@ -201,7 +199,7 @@ thead {
 }
 
 .acoes-coluna {
-  width: 60px; 
+  width: 60px;
   text-align: center; /* Centraliza o texto */
 }
 
@@ -237,11 +235,10 @@ tbody tr td.acao {
   text-align: center;
 }
 
-
 #total-salario {
   font-weight: bold;
   font-size: 14px; /* Aumentei um pouco o tamanho da fonte */
-  
+
   border: 2px solid gray;
   /* padding: 5px 10px;  */
   border-radius: 7px;
@@ -249,8 +246,8 @@ tbody tr td.acao {
   width: 130px; /* Aumentei a largura */
   height: 45px; /* Pequeno ajuste na altura */
 
-  display: inline-flex; 
-  align-items: center; 
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
   /* font-weight: bold;
   font-size: 12px;
@@ -269,7 +266,7 @@ tbody tr td.acao {
 #btnVerSaldos {
   font-weight: bold;
   font-size: 14px; /* Aumentei um pouco o tamanho da fonte */
-  
+
   border: 2px solid gray;
   /* padding: 5px 10px;  */
   border-radius: 7px;
@@ -277,13 +274,12 @@ tbody tr td.acao {
   width: 130px; /* Aumentei a largura */
   height: 45px; /* Pequeno ajuste na altura */
 
-  display: inline-flex; 
-  align-items: center; 
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
 
   /* background-color: gray; */
 }
-
 
 #total-salario-mensal {
   font-size: 12px;
@@ -500,35 +496,34 @@ td button i:first-child {
   display: flex;
 }
 
-
-#tabela-saldos th,  
-#tabela-saldos td {  
+#tabela-saldos th,
+#tabela-saldos td {
   text-align: center; /* Centraliza o texto nas colunas */
-  padding: 8px;  
+  padding: 8px;
   border: 1px solid #ccc; /* Adiciona borda para melhor visualização */
-}  
+}
 
-#tabela-saldos {  
-  width: 100%;  
+#tabela-saldos {
+  width: 100%;
   border-collapse: collapse; /* Remove espaçamento duplo entre as bordas */
   margin-top: 10px;
-}  
+}
 
-#tabela-saldos th {  
-  background-color: #f0f0f0;  
-  font-weight: bold;  
-}  
+#tabela-saldos th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
 
-.modal {  
+.modal {
   /* Centraliza o conteúdo dentro da modal */
   /* text-align: center;  */
   font-weight: bold;
-}  
+}
 
-.modal label {  
+.modal label {
   color: #333;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Adiciona sombra no texto */
-} 
+}
 
 /* Estilização do modal */
 .modal-deletar {
@@ -592,10 +587,33 @@ td button i:first-child {
   background-color: #cc0000; /* Vermelho mais escuro ao passar o mouse */
 }
 
-
 /* Efeito ao focar */
 .modal select#m-tipo:focus {
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   border-radius: 7px;
+}
+
+.sua-empresa {
+  display: flex;
+  flex-direction: column; /* Organiza os elementos em coluna */
+  align-items: center; /* Centraliza os elementos */
+  text-align: center;
+  /* font-family: Arial, sans-serif; */
+}
+.sua-empresa p {
+  margin: 0px 0; /* Espaçamento entre os textos */
+  font-size: 18px; /* Tamanho padrão */
+  font-weight: bold;
+}
+.sua-empresa #contador {
+  font-size: 12px; /* Letra menor para o ID contador */
+  color: gray; /* Cor diferenciada */
+}
+.sua-empresa #contadores {
+  font-size: 12px; /* Letra menor para o ID contador */
+  color: gray; /* Cor diferenciada */
+}
+#naoQuebraLinha {
+  white-space: nowrap;
 }
