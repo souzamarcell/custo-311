@@ -14,9 +14,9 @@ let id;
 let itemToDelete = null;
 
 // contador de visitante
-// let visitas = localStorage.getItem("contador") || 0;
-// visitas++;
-// localStorage.setItem("contador", visitas); // Atualiza o contador no localStorage
+let visitas = localStorage.getItem("contador") || 0;
+visitas++;
+localStorage.setItem("contador", visitas); // Atualiza o contador no localStorage
 // document.getElementById("contador").textContent = visitas; // Exibe o contador na página
 
 
@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mesAtual = (new Date().getMonth() + 1).toString().padStart(2, '0'); // Obtém o mês atual (01 a 12)
   const anoAtual = new Date().getFullYear(); // Obtém o ano atual
   atualizarSaldoAnual(); // Atualiza o saldo anual assim que a página carrega
+  // LoginSystem()
 
   // Simula um clique no botão do mês atual
   const botaoMesAtual = document.querySelector(`.meses button[data-mes="${mesAtual}"]`);
@@ -284,6 +285,43 @@ function atualizarSaldoAnual() {
   botaoSaldo.innerHTML = `Anual<br> ${saldoFormatado}`;
 
   botaoSaldo.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
+}
+
+function LoginSystem() {
+  const loginContainer = document.getElementById("login-container");
+  const loginBtn = document.getElementById("login-btn");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const loginError = document.getElementById("login-error");
+
+  // Simulação de usuário cadastrado
+  const users = [
+    { username: "admin", password: "1" },
+    { username: "marcell", password: "3" }
+  ];
+
+  // Verifica se o usuário já está logado
+  if (localStorage.getItem("loggedIn") === "true") {
+    loginContainer.style.display = "none";
+  } else {
+    loginContainer.style.display = "block";
+  }
+
+
+  loginBtn.addEventListener("click", function () {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    // Verifica se o usuário existe
+    const userExists = users.find(user => user.username === username && user.password === password);
+
+    if (userExists) {
+      localStorage.setItem("loggedIn", "true");
+      loginContainer.style.display = "none";
+    } else {
+      loginError.style.display = "block";
+    }
+  });
 }
 
 function mostrarSaldosMensais() {
