@@ -17,8 +17,7 @@ let itemToDelete = null;
 let visitas = localStorage.getItem("contador") || 0;
 visitas++;
 localStorage.setItem("contador", visitas); // Atualiza o contador no localStorage
-// document.getElementById("contador").textContent = visitas; // Exibe o contador na página
-
+document.getElementById("contador").textContent = visitas; // Exibe o contador na página
 
 
 // Atualizar o mês e ano ao clicar em um botão
@@ -92,7 +91,7 @@ btnSalvar.onclick = e => {
     return;
   }
   e.preventDefault();
-  const valor = parseFloat(sSalario.value);
+  const valor = parseFloat(sSalario.value.replace(',', '.')) || 0; // Converte
   const tipo = document.querySelector('#m-tipo').value; // Obtém o tipo (crédito ou débito)
   const totalFuncoes = parseInt(sFuncao.value);
 
@@ -135,7 +134,6 @@ btnSalvar.onclick = e => {
   id = undefined;
 };
 
-
 // Salvar no localStorage
 function setItensBD() {
   localStorage.setItem('dbfunc', JSON.stringify(itens));
@@ -162,7 +160,7 @@ function openModal(edit = false, index = 0) {
     sDescription.value = itens[index].description || '';
     sNome.value = itens[index].nome;
     sFuncao.value = itens[index].funcao;
-    sSalario.value = itens[index].salario;
+    sSalario.value = itens[index].salario.toString().replace('.', ',');
     sTipo.value = itens[index].tipo || 'debito'; // Garante que o tipo seja carregado corretamente
     id = index;
   } else {
@@ -177,21 +175,69 @@ function openModal(edit = false, index = 0) {
   }
 }
 
+function calcularSaldoMesPassado(mesAnoAtual) {
+  let itens = getItensBD(); // Recupera os lançamentos do banco de dados local
+
+  // Obtém o ano e mês do filtro
+  let [mesAtual, anoAtual] = mesAnoAtual.split('/').map(Number);
+
+  // Define o mês anterior
+  let mesAnterior = mesAtual - 1;
+  let anoAnterior = anoAtual;
+
+  if (mesAnterior === 0) {
+    mesAnterior = 12;
+    anoAnterior -= 1;
+  }
+
+  let mesAnoAnterior = `${mesAnterior.toString().padStart(2, '0')}/${anoAnterior}`;
+
+  // Filtra os lançamentos do mês anterior
+  let lancamentosMesPassado = itens.filter(item => item.mesAno === mesAnoAnterior);
+
+  // Calcula o saldo do mês passado
+  let saldo = lancamentosMesPassado.reduce((total, item) => {
+    let valor = parseFloat(item.salario) || 0;
+    // return item.tipo === 'debito' ? total - valor : total + valor;
+    return total + valor;
+  }, 0);
+  return saldo;
+}
+
 // Carregar itens no DOM
 function loadItens(filtro = null) {
   itens = getItensBD();
-
   itens.sort((a, b) => parseInt(a.dia) - parseInt(b.dia));
-
   tbody.innerHTML = '';
 
+  // Calcula o saldo do mês passado
+  let saldoMesPassado = filtro ? calcularSaldoMesPassado(filtro) : 0;
+
+  // Cria um lançamento fictício representando o saldo do mês passado
+  let lancamentoSaldoPassado = {
+    dia: "1", // Deixe em branco para indicar que não tem dia específico
+    nome: "Mês passado",
+    description: "",
+    funcao: "",
+    tipo: saldoMesPassado < 0 ? "debito" : "credito",
+    salario: saldoMesPassado
+  };
+
+  // Adiciona o saldo do mês passado como um lançamento real
+  insertItem(lancamentoSaldoPassado, -1); // Usa -1 pois não faz parte do índice real
+
+  let saldoAcumulado = saldoMesPassado; // Começa com o saldo do mês passado
+
+  // Carrega os lançamentos normais do mês atual
   itens.forEach((item, index) => {
     if (!filtro || item.mesAno === filtro) {
-      insertItem(item, index);
+      saldoAcumulado = insertItem(item, index, saldoAcumulado);
     }
   });
-  calcularTotalSalarios(filtro); // Agora calcula o saldo APENAS do mês selecionado
+
+  calcularTotalSalarios(filtro);
 }
+
 
 function getMesAnoAtual() {
   let hoje = new Date();
@@ -223,6 +269,17 @@ function closeModal() {
   document.getElementById("confirmModal").style.display = "none";
 }
 
+// Calcular total dos salários
+function calcularTotalSalarios(mesAnoFiltro = null) {
+  let total = itens
+    .filter(item => item.mesAno === mesAnoFiltro) // Filtra apenas os itens do mês selecionado
+    .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
+
+  const totalSalarioElement = document.querySelector('#total-salario');
+  totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+  totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
+}
+
 // <td> Inserir item na tabela
 function insertItem(item, index) {
   let tr = document.createElement('tr');
@@ -239,25 +296,38 @@ function insertItem(item, index) {
       ${parseFloat(item.salario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
     </td>  
 
+       ${item.nome === "Mês passado" ? "" : `
     <td class="acao">
       <span class="btn-group">
         <button onclick="editItem(${index})" title="Editar"><i class='bx bx-edit'></i></button>
         <button onclick="deleteItem(${index})" title="Deletar"><i class='bx bx-trash'></i></button>
       </span>
-    </td>
+    </td>`}
   `;
+
+  // Recupera os índices das linhas selecionadas do localStorage
+  let linhasSelecionadas = JSON.parse(localStorage.getItem('linhasSelecionadas')) || [];
+
+  // Se a linha estiver no localStorage, adiciona a classe 'selecionado'
+  if (linhasSelecionadas.includes(index)) {
+    tr.classList.add('selecionado');
+  }
+
+  // Evento de clique para alternar a seleção e armazenar no localStorage
+  tr.addEventListener('click', function () {
+    this.classList.toggle('selecionado');
+
+    let linhasSelecionadas = JSON.parse(localStorage.getItem('linhasSelecionadas')) || [];
+
+    if (this.classList.contains('selecionado')) {
+      linhasSelecionadas.push(index); // Adiciona ao armazenamento
+    } else {
+      linhasSelecionadas = linhasSelecionadas.filter(i => i !== index); // Remove do armazenamento
+    }
+
+    localStorage.setItem('linhasSelecionadas', JSON.stringify(linhasSelecionadas));
+  });
   tbody.appendChild(tr);
-}
-
-// Calcular total dos salários
-function calcularTotalSalarios(mesAnoFiltro = null) {
-  let total = itens
-    .filter(item => item.mesAno === mesAnoFiltro) // Filtra apenas os itens do mês selecionado
-    .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
-
-  const totalSalarioElement = document.querySelector('#total-salario');
-  totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-  totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
 }
 
 // Retorna a data atual no formato DD/MM/YYYY
@@ -331,16 +401,17 @@ function mostrarSaldosMensais() {
 
   listaSaldos.innerHTML = ''; // Limpa a lista antes de exibir os novos dados
 
-  let index = 1;
+  let index = 0; // Começa do índice 0
   Object.keys(saldos).sort().forEach(mesAno => {
     let saldo = saldos[mesAno];
     totalSaldoGeral += saldo;
-    // <td>${index++}</td>
 
-    // let sinal = saldo > 0 ? '+' : '';
     let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
-
     let tr = document.createElement('tr');
+    
+    // Adiciona uma classe para alternar as cores
+    tr.classList.add(index % 2 === 0 ? 'linha-par' : 'linha-impar');
+
     tr.innerHTML = `
       <td>${mesAno}</td>
       <td style="color: ${cor}; font-weight: bold;">
@@ -348,25 +419,18 @@ function mostrarSaldosMensais() {
       </td>
     `;
     listaSaldos.appendChild(tr);
+    index++; // Incrementa o índice
   });
 
   let totalSaldoGeralElemento = document.getElementById('total-saldo-geral');
   totalSaldoGeralElemento.textContent = totalSaldoGeral.toLocaleString(
     'pt-BR', { minimumFractionDigits: 2 }
   );
-  // Define a cor do saldo
   totalSaldoGeralElemento.style.color = totalSaldoGeral < 0 ? 'red' : 'blue';
 
-  // Formata o saldo total geral
   let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-
-  // Atualiza o botão com o saldo anual
-  // document.getElementById('btnVerSaldos').textContent = `Anual ${saldoFormatado}`;
   document.getElementById('btnVerSaldos').innerHTML = `Anual<br>${saldoFormatado}`;
-
-  document.getElementById('total-saldo-geral').textContent = totalSaldoGeral.toLocaleString(
-    'pt-BR', { minimumFractionDigits: 2 }
-  );
+  
   document.querySelector('.saldo-modal').classList.add('active');
 }
 

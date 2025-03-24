@@ -17,7 +17,7 @@
       <p id="contadores">Visitantes: <span id="contador"></span></p>
     </span>
 
-    <div class="espacoIcone">....</div>
+    <div class="espacoIcone">............</div>
     <a href="https://wa.me/5592991357070" class="whatsApp-link" target="_blank">
       <div class="whatsApp-icon">
         <img src="Imagens/marcell-whatsApp.jpg" alt="whatsApp Marcell Ramos de Souza">
@@ -82,7 +82,7 @@
         </thead>
         <tbody></tbody>
       </table>
-  
+
     </div>
 
     <!-- <div id="login-container" class="modal">
@@ -154,8 +154,10 @@
           <input id="m-funcao" type="text" placeholder="" required
             oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
 
-          <label for="m-nome">Valor</label>
-          <input id="m-salario" type="text" placeholder="" required />
+          <label for="m-salario">Valor</label>
+          <input id="m-salario" type="text" placeholder="" required
+            oninput="this.value = this.value.replace(/[^0-9,]/g, '').replace(/(,.*),/g, '$1')" />
+
 
           <div class="btn-group">
             <button type="button" id="btnCancelar" class="cancelar">Cancelar</button>

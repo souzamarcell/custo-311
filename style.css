@@ -510,7 +510,8 @@ td button i:first-child {
 }
 
 #tabela-saldos th {
-  background-color: #f0f0f0;
+  background-color: #555;
+  color: white;
   font-weight: bold;
 }
 
@@ -656,4 +657,19 @@ td button i:first-child {
 
 .modal-content button:hover {
   background: #218838;
+}
+
+.selecionado {
+  background-color: #e6e6e6  !important; /* Cinza claro para um tom mais clássico */
+  color: #555  !important; /* Cor do texto mais escura para melhor contraste */
+  /* font-weight: bold;  */
+  border: 1px solid white !important; 
+  transition: background-color 0.3s ease-in-out; /* Efeito suave ao selecionar */
+}
+
+.linha-par {
+  background-color: #e6e6e6  ; /* Cinza claro */
+}
+.linha-impar {
+  background-color: #ffffff ; /* Branco */
 }
