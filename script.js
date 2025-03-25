@@ -86,14 +86,15 @@ function getItensBD() {
 
 // Salvar item
 btnSalvar.onclick = e => {
-  if (sDia.value == '' || sDescription.value == '' || sNome.value == '' || sFuncao.value == '' || isNaN(parseFloat(sSalario.value))) {
+  if (sDia.value == '' || sDescription.value == '' || sNome.value == '' || isNaN(parseFloat(sSalario.value))) {
     alert('Preencha todos os campos corretamente!');
     return;
   }
   e.preventDefault();
   const valor = parseFloat(sSalario.value.replace(',', '.')) || 0; // Converte
   const tipo = document.querySelector('#m-tipo').value; // Obtém o tipo (crédito ou débito)
-  const totalFuncoes = parseInt(sFuncao.value);
+  // const totalFuncoes = parseInt(sFuncao.value);
+  const totalFuncoes = sFuncao.value.trim() === '' ? 1 : parseInt(sFuncao.value); // Define 1 como padrão se estiver vazio
 
   // Converte o mês/ano selecionado para um objeto Date
   const [mes, ano] = sMesAnoSelecionado.split('/').map(Number);
@@ -445,7 +446,7 @@ function mostrarSaldosMensais() {
 
     let cor = saldo < 0 ? 'red' : 'blue'; // Define a cor baseada no valor
     let tr = document.createElement('tr');
-    
+
     // Adiciona uma classe para alternar as cores
     tr.classList.add(index % 2 === 0 ? 'linha-par' : 'linha-impar');
 
@@ -467,7 +468,7 @@ function mostrarSaldosMensais() {
 
   let saldoFormatado = totalSaldoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
   document.getElementById('btnVerSaldos').innerHTML = `Anual<br>${saldoFormatado}`;
-  
+
   document.querySelector('.saldo-modal').classList.add('active');
 }
 
