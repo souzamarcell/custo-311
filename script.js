@@ -204,6 +204,34 @@ function calcularSaldoMesPassado(mesAnoAtual) {
   return saldo;
 }
 
+function calcularSaldoMesesPassados(mesAnoAtual) {
+  let itens = getItensBD(); // Recupera os lançamentos do banco de dados local
+
+  // Obtém o ano e mês do filtro
+  let [mesAtual, anoAtual] = mesAnoAtual.split('/').map(Number);
+
+  let saldoAcumulado = 0;
+
+  // Loop de janeiro até o mês anterior ao selecionado
+  for (let mes = 1; mes < mesAtual; mes++) {
+    let mesAno = `${mes.toString().padStart(2, '0')}/${anoAtual}`;
+
+    // Filtra os lançamentos do mês
+    let lancamentosDoMes = itens.filter(item => item.mesAno === mesAno);
+
+    // Soma os valores do mês ao saldo acumulado
+    let saldoMes = lancamentosDoMes.reduce((total, item) => {
+      let valor = parseFloat(item.salario) || 0;
+      return total + valor;
+    }, 0);
+
+    saldoAcumulado += saldoMes;
+  }
+
+  return saldoAcumulado;
+}
+
+
 // Carregar itens no DOM
 function loadItens(filtro = null) {
   itens = getItensBD();
@@ -211,7 +239,8 @@ function loadItens(filtro = null) {
   tbody.innerHTML = '';
 
   // Calcula o saldo do mês passado
-  let saldoMesPassado = filtro ? calcularSaldoMesPassado(filtro) : 0;
+  // let saldoMesPassado = filtro ? calcularSaldoMesPassado(filtro) : 0;
+  let saldoMesPassado = filtro ? calcularSaldoMesesPassados(filtro) : 0;
 
   // Cria um lançamento fictício representando o saldo do mês passado
   let lancamentoSaldoPassado = {
@@ -223,7 +252,7 @@ function loadItens(filtro = null) {
     salario: saldoMesPassado
   };
 
-  // Adiciona o saldo do mês passado como um lançamento real
+  // Adiciona o saldo do mês passado + lançamento do mes atual + os meses passados
   insertItem(lancamentoSaldoPassado, -1); // Usa -1 pois não faz parte do índice real
 
   let saldoAcumulado = saldoMesPassado; // Começa com o saldo do mês passado
@@ -271,14 +300,22 @@ function closeModal() {
 
 // Calcular total dos salários
 function calcularTotalSalarios(mesAnoFiltro = null) {
+  let saldoMesPassado = mesAnoFiltro ? calcularSaldoMesPassado(mesAnoFiltro) : 0;
+  let saldoMesesPassados = mesAnoFiltro ? calcularSaldoMesesPassados(mesAnoFiltro) : 0;
+
   let total = itens
     .filter(item => item.mesAno === mesAnoFiltro) // Filtra apenas os itens do mês selecionado
-    .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0);
+    .reduce((acc, item) => acc + (parseFloat(item.salario) || 0), 0); // Soma apenas os valores do mês atual
+
+  // Soma o saldo acumulado dos meses anteriores
+  // total += saldoMesPassado + saldoMesesPassados;
+  total += saldoMesesPassados;
 
   const totalSalarioElement = document.querySelector('#total-salario');
   totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
 }
+
 
 // <td> Inserir item na tabela
 function insertItem(item, index) {
@@ -288,7 +325,7 @@ function insertItem(item, index) {
     <td>
     ${item.dia || ''}
     </td>
-    <td>${item.nome}</td>
+    <td>${item.nome === "Mês passado" ? `<span style="color: blue; font-weight: bold;">${item.nome}</span>` : item.nome}</td>
     <td>${item.description || ''}</td>
     <td>${item.funcao}</td>
 
