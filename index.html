@@ -18,9 +18,9 @@
     </span>
 
     <div class="espacoIcone">...</div>
-    <div class="login">Login</div>
+    <!-- <div class="login">Login</div> -->
     <div class="espacoIcone">...</div>
-    
+
     <a href="https://wa.me/5592991357070" class="whatsApp-link" target="_blank">
       <div class="whatsApp-icon">
         <img src="Imagens/marcell-whatsApp.jpg" alt="whatsApp Marcell Ramos de Souza">
@@ -145,7 +145,7 @@
           <input type="hidden" id="m-mesAno">
 
           <label for="m-dia">Dia</label>
-          <input id="m-dia" type="text" required />
+          <input id="m-dia" type="text" required pattern="^(0?[1-9]|[12][0-9]|3[01])$" inputmode="numeric" />
 
           <label for="m-nome">Transação</label>
           <input type="text" id="m-description" placeholder="" required />

@@ -79,6 +79,13 @@ document.getElementById("btnLimpar").onclick = function () {
   }
 };
 
+// Apenas números de 1 a 31
+document.getElementById("m-dia").addEventListener("input", function (e) {
+  this.value = this.value.replace(/[^0-9]/g, ""); // Permite apenas números
+  if (this.value > 31) this.value = 31; // Limita a 31
+  if (this.value < 1 && this.value !== "") this.value = 1; // Limita a 1
+});
+
 // Recuperar do localStorage
 function getItensBD() {
   return JSON.parse(localStorage.getItem('dbfunc')) ?? [];
@@ -232,7 +239,6 @@ function calcularSaldoMesesPassados(mesAnoAtual) {
   return saldoAcumulado;
 }
 
-
 // Carregar itens no DOM
 function loadItens(filtro = null) {
   itens = getItensBD();
@@ -267,7 +273,6 @@ function loadItens(filtro = null) {
 
   calcularTotalSalarios(filtro);
 }
-
 
 function getMesAnoAtual() {
   let hoje = new Date();
@@ -316,7 +321,6 @@ function calcularTotalSalarios(mesAnoFiltro = null) {
   totalSalarioElement.innerHTML = `Mensal<br> ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   totalSalarioElement.style.color = total < 0 ? 'red' : 'blue';
 }
-
 
 // <td> Inserir item na tabela
 function insertItem(item, index) {

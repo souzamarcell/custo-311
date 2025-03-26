@@ -5,6 +5,8 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  /* width: 100vw; */
+  /* height: 100vh; */
 }
 
 body {
@@ -652,22 +654,23 @@ td button i:first-child {
 #login-container {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  left: 0; /* Garante que começa exatamente do lado esquerdo */
+  right: 0; /* Faz com que vá até a borda direita */
+  bottom: 0; /* Garante que ocupa toda a altura */
+  width: 100vw; /* Usa 100% da largura da viewport */
+  height: 100vh; /* Usa 100% da altura da viewport */
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
-
 .modal-content {
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 10px;
   text-align: center;
 }
-
 .modal-content input {
   width: 100%;
   padding: 10px;
@@ -675,16 +678,14 @@ td button i:first-child {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
-
-.modal-content button {
-  padding: 10px 20px;
+/* .modal-content button { */
+  /* padding: 10px 20px; */
   background: #28a745;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
-
 .modal-content button:hover {
   background: #218838;
 }
