@@ -19,15 +19,19 @@ visitas++;
 localStorage.setItem("contador", visitas); // Atualiza o contador no localStorage
 document.getElementById("contador").textContent = visitas; // Exibe o contador na página
 
-
 // Atualizar o mês e ano ao clicar em um botão
 let sMesAnoSelecionado = '';
-// let sMesAnoSelecionado = getMesAnoAtual(); // Define o mês atual ao iniciar
 document.querySelectorAll('.meses button').forEach(button => {
   button.addEventListener('click', function () {
     const mesSelecionado = this.getAttribute('data-mes');
     const anoAtual = new Date().getFullYear();
-    sMesAnoSelecionado = `${mesSelecionado}/${anoAtual}`;
+
+    if (mesSelecionado === 'T') {
+      sMesAnoSelecionado = `03/${anoAtual}`;
+    } else {
+      sMesAnoSelecionado = `${mesSelecionado}/${anoAtual}`;
+    }
+
     loadItens(sMesAnoSelecionado); // Carrega apenas os itens do mês selecionado
   });
 });
@@ -112,8 +116,10 @@ btnSalvar.onclick = e => {
     itens[id] = {
       ...itens[id],
       dia: sDia.value,
-      description: sDescription.value,
-      nome: sNome.value,
+
+      nome: sDescription.value,
+      description: sNome.value,
+
       salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor),
       tipo: sTipo.value
     };
@@ -125,8 +131,10 @@ btnSalvar.onclick = e => {
       const novoItem = {
         mesAno: `${String(novaData.getMonth() + 1).padStart(2, '0')}/${novaData.getFullYear()}`, // Formato MM/YYYY
         dia: sDia.value,
-        description: `${sDescription.value}`, // Mantém a descrição
-        nome: sNome.value,
+
+        nome: `${sDescription.value}`, // Mantém a descrição
+        description: sNome.value,
+
         funcao: `${i}x${totalFuncoes}`, // Formato correto das funções
         salario: tipo === "debito" ? -Math.abs(valor) : Math.abs(valor), // Débito negativo, crédito positivo
         tipo: sTipo.value
@@ -165,8 +173,10 @@ function openModal(edit = false, index = 0) {
   if (edit) {
     sMesAno.value = itens[index].mesAno || getMesAnoAtual(); // Se não houver, usa o mês e ano atuais
     sDia.value = itens[index].dia || getDiaAtual(); // Se não houver valor, usa o dia atual
-    sDescription.value = itens[index].description || '';
-    sNome.value = itens[index].nome;
+
+    sNome.value = itens[index].description || '';
+    sDescription.value = itens[index].nome;
+
     sFuncao.value = itens[index].funcao;
     sSalario.value = itens[index].salario.toString().replace('.', ',');
     sTipo.value = itens[index].tipo || 'debito'; // Garante que o tipo seja carregado corretamente
@@ -246,8 +256,15 @@ function loadItens(filtro = null) {
   tbody.innerHTML = '';
 
   // Calcula o saldo do mês passado
-  // let saldoMesPassado = filtro ? calcularSaldoMesPassado(filtro) : 0;
-  let saldoMesPassado = filtro ? calcularSaldoMesesPassados(filtro) : 0;
+  let saldoMesPassado = 0;
+
+  // Se o filtro for todos os meses do ano, calculamos o saldo de todos os meses do ano
+  if (filtro === `*/${new Date().getFullYear()}`) {
+    saldoMesPassado = calcularSaldoMesesPassados(filtro);
+  } else if (filtro) {
+    // Caso contrário, calculamos o saldo apenas para o mês e ano especificado
+    saldoMesPassado = calcularSaldoMesesPassados(filtro);
+  }
 
   // Cria um lançamento fictício representando o saldo do mês passado
   let lancamentoSaldoPassado = {
@@ -259,18 +276,17 @@ function loadItens(filtro = null) {
     salario: saldoMesPassado
   };
 
-  // Adiciona o saldo do mês passado + lançamento do mes atual + os meses passados
-  insertItem(lancamentoSaldoPassado, -1); // Usa -1 pois não faz parte do índice real
+  // Adiciona o lançamento do saldo passado à lista de itens
+  insertItem(lancamentoSaldoPassado);
 
-  let saldoAcumulado = saldoMesPassado; // Começa com o saldo do mês passado
-
-  // Carrega os lançamentos normais do mês atual
-  itens.forEach((item, index) => {
-    if (!filtro || item.mesAno === filtro) {
-      saldoAcumulado = insertItem(item, index, saldoAcumulado);
+  // Carrega os itens de acordo com o filtro
+  itens.forEach(item => {
+    if (filtro === `*/${new Date().getFullYear()}` || item.mesAno === filtro) {
+      insertItem(item);
     }
   });
 
+  // Calcula o total de salários
   calcularTotalSalarios(filtro);
 }
 
@@ -291,6 +307,7 @@ function deleteItem(index) {
   itemToDelete = index;
   document.getElementById("confirmModal").style.display = "flex";
 }
+
 function confirmDelete() {
   if (itemToDelete !== null) {
     itens.splice(itemToDelete, 1);
@@ -300,6 +317,7 @@ function confirmDelete() {
   }
   closeModal();
 }
+
 function closeModal() {
   document.getElementById("confirmModal").style.display = "none";
 }
@@ -370,6 +388,11 @@ function insertItem(item, index) {
     localStorage.setItem('linhasSelecionadas', JSON.stringify(linhasSelecionadas));
   });
   tbody.appendChild(tr);
+}
+
+// Formata valores numéricos para o formato brasileiro
+function formatarValor(valor) {
+  return parseFloat(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 }
 
 // Retorna a data atual no formato DD/MM/YYYY

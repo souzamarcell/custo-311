@@ -36,6 +36,8 @@
     <div class="header">
 
       <span id="dolar">$</span>
+      <!-- <button id="showAllYearsMonths" onclick="showAllYearsAndMonths()">$</button> -->
+
       <span id="total-salario"></span>
       <button id="btnVerSaldos">Anual SALDO</button>
       <button onclick="openModal()" id="new"> Incluir </i> </button>
@@ -44,21 +46,24 @@
 
     <!-- <div class="divTableAno">
       <div class="anos">
-        <button data-mes="01">2025</button>
-        <button data-mes="02">2026</button>
-        <button data-mes="03">2027</button>
-        <button data-mes="04">2028</button>
-        <button data-mes="05">2029</button>
-        <button data-mes="06">2030</button>
-        <button data-mes="07">2031</button>
-        <button data-mes="08">2032</button>
-        <button data-mes="09">2033</button>
-        <button data-mes="10">2034</button>
+        <button data-ano="2025">2025</button>
+        <button data-ano="2026">2026</button>
+        <button data-ano="2027">2027</button>
+        <button data-ano="2028">2028</button>
+        <button data-ano="2029">2029</button>
+        <button data-ano="2030">2030</button>
+        <button data-ano="2031">2031</button>
+        <button data-ano="2032">2032</button>
+        <button data-ano="2033">2033</button>
+        <button data-ano="2034">2034</button>
       </div>
     </div> -->
 
+    <!-- <div id="yearsAndMonthsDisplay">xxxxxxxxxxxxxxxxxxxxxxxxxxx</div> -->
+
     <div class="divTable">
       <div class="meses">
+        <button data-mes="T">T</button>
         <button data-mes="01">Jan</button>
         <button data-mes="02">Fev</button>
         <button data-mes="03">Mar</button>
@@ -85,8 +90,9 @@
         </thead>
         <tbody></tbody>
       </table>
-
     </div>
+
+
 
     <!-- <div id="login-container" class="modal">
       <div class="modal-content">
@@ -147,13 +153,13 @@
           <label for="m-dia">Dia</label>
           <input id="m-dia" type="text" required pattern="^(0?[1-9]|[12][0-9]|3[01])$" inputmode="numeric" />
 
-          <label for="m-nome">Transação</label>
+          <label for="m-description">Transação</label>
           <input type="text" id="m-description" placeholder="" required />
 
           <label for="m-nome">Grupo</label>
           <input id="m-nome" type="text" placeholder="" required />
 
-          <label for="m-nome">Parcelas</label>
+          <label for="m-funcao">Parcelas</label>
           <input id="m-funcao" type="text" placeholder="" required
             oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
 
