@@ -42,7 +42,7 @@ body {
   /* height: 100vh; */
   border-radius: 10px;
   background: white;
-  /* margin-top: 35px; */
+  margin-top: 30px;
 }
 
 button {
@@ -167,13 +167,14 @@ button {
 
 .meses {
   display: flex;
-  justify-content: center; /* Centraliza os botões */
-  flex-wrap: wrap; /* Evita quebra desnecessária */
-  gap: 2px; /* Espaço de 1px entre os botões */
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 3px;
   padding-bottom: 10px;
+  margin: 0 auto; /* centraliza respeitando as margens esquerda e direita */
 }
 .meses button {
-  padding: 8px 2px;
+  padding: 5px 2px;
   border: 0.7px solid #ccc;
   background-color: #f1f1f1;
   cursor: pointer;
