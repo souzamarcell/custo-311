@@ -16,6 +16,7 @@ body {
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
 }
 
 .header {
@@ -35,12 +36,13 @@ body {
 }
 
 .container {
-  width: 95%;
-  height: 95%;
-  width: 100vw;
-  height: 100vh;
+  width: 98%;
+  height: 96%;
+  /* width: 100vw; */
+  /* height: 100vh; */
   border-radius: 10px;
   background: white;
+  /* margin-top: 35px; */
 }
 
 button {
@@ -167,7 +169,7 @@ button {
   display: flex;
   justify-content: center; /* Centraliza os botões */
   flex-wrap: wrap; /* Evita quebra desnecessária */
-  gap: 3px; /* Espaço de 1px entre os botões */
+  gap: 2px; /* Espaço de 1px entre os botões */
   padding-bottom: 10px;
 }
 .meses button {
@@ -329,7 +331,7 @@ tbody tr td.acao {
   }
 
   .header span {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   #new {
